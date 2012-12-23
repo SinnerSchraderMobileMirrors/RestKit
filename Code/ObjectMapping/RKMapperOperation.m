@@ -32,12 +32,6 @@ NSString * const RKMappingErrorKeyPathErrorKey = @"keyPath";
 #undef RKLogComponent
 #define RKLogComponent RKlcl_cRestKitObjectMapping
 
-static NSString *RKDelegateKeyPathFromKeyPath(NSString *keyPath)
-{
-    return ([keyPath isEqual:[NSNull null]]) ? nil : keyPath;
-}
-
-
 static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representation, NSDictionary *mappingsDictionary)
 {
     NSMutableString *failureReason = [NSMutableString string];
@@ -92,7 +86,7 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
 {
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                      errorMessage, NSLocalizedDescriptionKey,
-                                     keyPath ? keyPath : [NSNull null], RKMappingErrorKeyPathErrorKey,
+                                     keyPath ? keyPath : @".", RKMappingErrorKeyPathErrorKey,
                                      nil];
     [userInfo addEntriesFromDictionary:otherInfo];
     NSError *error = [NSError errorWithDomain:RKErrorDomain code:errorCode userInfo:userInfo];
@@ -234,19 +228,19 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
     RKMappingOperation *mappingOperation = [[RKMappingOperation alloc] initWithSourceObject:mappableObject destinationObject:destinationObject mapping:mapping];
     mappingOperation.dataSource = self.mappingOperationDataSource;
     if ([self.delegate respondsToSelector:@selector(mapper:willStartMappingOperation:forKeyPath:)]) {
-        [self.delegate mapper:self willStartMappingOperation:mappingOperation forKeyPath:RKDelegateKeyPathFromKeyPath(keyPath)];
+        [self.delegate mapper:self willStartMappingOperation:mappingOperation forKeyPath:keyPath];
     }
     [mappingOperation start];
     if (mappingOperation.error) {
         if ([self.delegate respondsToSelector:@selector(mapper:didFailMappingOperation:forKeyPath:withError:)]) {
-            [self.delegate mapper:self didFailMappingOperation:mappingOperation forKeyPath:RKDelegateKeyPathFromKeyPath(keyPath) withError:mappingOperation.error];
+            [self.delegate mapper:self didFailMappingOperation:mappingOperation forKeyPath:keyPath withError:mappingOperation.error];
         }
         [self addError:mappingOperation.error];
      
         return NO;
     } else {
         if ([self.delegate respondsToSelector:@selector(mapper:didFinishMappingOperation:forKeyPath:)]) {
-            [self.delegate mapper:self didFinishMappingOperation:mappingOperation forKeyPath:RKDelegateKeyPathFromKeyPath(keyPath)];
+            [self.delegate mapper:self didFinishMappingOperation:mappingOperation forKeyPath:keyPath];
         }
         
         return YES;
@@ -305,7 +299,7 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
 
         RKLogTrace(@"Examining keyPath '%@' for mappable content...", keyPath);
 
-        if ([keyPath isEqual:[NSNull null]] || [keyPath isEqualToString:@""]) {
+        if ([keyPath isEqualToString:@"."]) {
             nestedRepresentation = self.representation;
         } else {
             nestedRepresentation = [self.representation valueForKeyPath:keyPath];
@@ -316,7 +310,7 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
             RKLogDebug(@"Found unmappable value at keyPath: %@", keyPath);
 
             if ([self.delegate respondsToSelector:@selector(mapper:didNotFindRepresentationOrArrayOfRepresentationsAtKeyPath:)]) {
-                [self.delegate mapper:self didNotFindRepresentationOrArrayOfRepresentationsAtKeyPath:RKDelegateKeyPathFromKeyPath(keyPath)];
+                [self.delegate mapper:self didNotFindRepresentationOrArrayOfRepresentationsAtKeyPath:keyPath];
             }
 
             continue;
@@ -326,7 +320,7 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
         foundMappable = YES;
         RKMapping *mapping = [mappingsByKeyPath objectForKey:keyPath];
         if ([self.delegate respondsToSelector:@selector(mapper:didFindRepresentationOrArrayOfRepresentations:atKeyPath:)]) {
-            [self.delegate mapper:self didFindRepresentationOrArrayOfRepresentations:nestedRepresentation atKeyPath:RKDelegateKeyPathFromKeyPath(keyPath)];
+            [self.delegate mapper:self didFindRepresentationOrArrayOfRepresentations:nestedRepresentation atKeyPath:keyPath];
         }
 
         mappingResult = [self mapRepresentationOrRepresentations:nestedRepresentation atKeyPath:keyPath usingMapping:mapping];
@@ -379,7 +373,7 @@ static NSString *RKFailureReasonErrorStringForMappingNotFoundError(id representa
     if (foundMappable == NO && !isEmpty) {
         NSMutableDictionary *userInfo = [@{ NSLocalizedDescriptionKey: NSLocalizedString(@"No mappable object representations were found at the key paths searched.", nil),
                                             NSLocalizedFailureReasonErrorKey: RKFailureReasonErrorStringForMappingNotFoundError(self.representation, self.mappingsDictionary),
-                                            RKMappingErrorKeyPathErrorKey: [NSNull null],
+                                            RKMappingErrorKeyPathErrorKey: @".",
                                             RKDetailedErrorsKey: self.errors} mutableCopy];
         NSError *compositeError = [[NSError alloc] initWithDomain:RKErrorDomain code:RKMappingErrorNotFound userInfo:userInfo];
         self.error = compositeError;

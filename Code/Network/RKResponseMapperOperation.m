@@ -168,7 +168,7 @@ static dispatch_queue_t RKResponseMapperSerializationQueue() {
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     for (RKResponseDescriptor *responseDescriptor in self.responseDescriptors) {
         if ([responseDescriptor matchesResponse:self.response]) {
-            id key = responseDescriptor.keyPath ? responseDescriptor.keyPath : [NSNull null];
+            id key = responseDescriptor.keyPath ? responseDescriptor.keyPath : @".";
             [dictionary setObject:responseDescriptor.mapping forKey:key];
         }
     }

@@ -1017,7 +1017,7 @@
     [firstContext performBlockAndWait:^{
         RKManagedObjectMappingOperationDataSource *dataSource = [[RKManagedObjectMappingOperationDataSource alloc] initWithManagedObjectContext:firstContext
                                                                                                                                           cache:inMemoryCache];
-        RKMapperOperation *mapperOperation = [[RKMapperOperation alloc] initWithRepresentation:objectRepresentation mappingsDictionary:@{ [NSNull null]: mapping }];
+        RKMapperOperation *mapperOperation = [[RKMapperOperation alloc] initWithRepresentation:objectRepresentation mappingsDictionary:@{ @".": mapping }];
         mapperOperation.mappingOperationDataSource = dataSource;
         success = [mapperOperation execute:&error];
         expect(success).to.equal(YES);
@@ -1034,7 +1034,7 @@
     [secondContext performBlockAndWait:^{
         RKManagedObjectMappingOperationDataSource *dataSource = [[RKManagedObjectMappingOperationDataSource alloc] initWithManagedObjectContext:secondContext
                                                                                                                                           cache:inMemoryCache];
-        RKMapperOperation *mapperOperation = [[RKMapperOperation alloc] initWithRepresentation:objectRepresentation mappingsDictionary:@{ [NSNull null]: mapping }];
+        RKMapperOperation *mapperOperation = [[RKMapperOperation alloc] initWithRepresentation:objectRepresentation mappingsDictionary:@{ @".": mapping }];
         mapperOperation.mappingOperationDataSource = dataSource;
         success = [mapperOperation execute:&error];
         expect(success).to.equal(YES);

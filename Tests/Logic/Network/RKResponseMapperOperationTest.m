@@ -166,7 +166,7 @@ NSString *RKPathAndQueryStringFromURLRelativeToURL(NSURL *URL, NSURL *baseURL);
     [mapper start];
     expect(mapper.error).to.beNil();
 
-    NSDictionary *expectedMappingsDictionary = @{ [NSNull null] : mapping };
+    NSDictionary *expectedMappingsDictionary = @{ @"." : mapping };
     expect(mapper.responseMappingsDictionary).to.equal(expectedMappingsDictionary);
 }
 
@@ -184,7 +184,7 @@ NSString *RKPathAndQueryStringFromURLRelativeToURL(NSURL *URL, NSURL *baseURL);
     [mapper start];
     expect(mapper.error).to.beNil();
 
-    NSDictionary *expectedMappingsDictionary = @{ [NSNull null] : mapping };
+    NSDictionary *expectedMappingsDictionary = @{ @"." : mapping };
     expect(mapper.responseMappingsDictionary).to.equal(expectedMappingsDictionary);
 }
 
@@ -202,7 +202,7 @@ NSString *RKPathAndQueryStringFromURLRelativeToURL(NSURL *URL, NSURL *baseURL);
     [mapper start];
     expect(mapper.error).to.beNil();
 
-    NSDictionary *expectedMappingsDictionary = @{ [NSNull null] : mapping };
+    NSDictionary *expectedMappingsDictionary = @{ @"." : mapping };
     expect(mapper.responseMappingsDictionary).to.equal(expectedMappingsDictionary);
 }
 
@@ -220,7 +220,7 @@ NSString *RKPathAndQueryStringFromURLRelativeToURL(NSURL *URL, NSURL *baseURL);
     [mapper start];
     expect(mapper.error).to.beNil();
 
-    NSDictionary *expectedMappingsDictionary = @{ [NSNull null] : mapping };
+    NSDictionary *expectedMappingsDictionary = @{ @"." : mapping };
     expect(mapper.responseMappingsDictionary).to.equal(expectedMappingsDictionary);
 }
 
@@ -238,7 +238,7 @@ NSString *RKPathAndQueryStringFromURLRelativeToURL(NSURL *URL, NSURL *baseURL);
     [mapper start];
     expect(mapper.error).to.beNil();
 
-    NSDictionary *expectedMappingsDictionary = @{ [NSNull null] : mapping };
+    NSDictionary *expectedMappingsDictionary = @{ @"." : mapping };
     expect(mapper.responseMappingsDictionary).to.equal(expectedMappingsDictionary);
 }
 

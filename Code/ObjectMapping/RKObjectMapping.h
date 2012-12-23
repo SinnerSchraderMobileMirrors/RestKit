@@ -57,6 +57,10 @@
  
  Transformation blocks can be configured on a per-mapping basis or globally via `[RKObjectMapping setDefaultSourceToDestinationKeyTransformationBlock:]`.
 
+ ## Generating an Inverse Mapping
+ 
+ Because object mapping describe
+ 
  @see `RKAttributeMapping`
  @see `RKRelationshipMapping`
  @see `RKConnectionMapping`

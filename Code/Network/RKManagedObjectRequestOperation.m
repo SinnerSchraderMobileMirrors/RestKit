@@ -68,7 +68,7 @@
 
 - (void)visitMapping:(RKMapping *)mapping atKeyPath:(NSString *)keyPath
 {
-    id actualKeyPath = keyPath ?: [NSNull null];
+    id actualKeyPath = keyPath ?: @".";
     if ([self.keyPaths containsObject:actualKeyPath]) return;    
     if ([mapping isKindOfClass:[RKEntityMapping class]]) [self.mutableKeyPaths addObject:actualKeyPath];
     if ([mapping isKindOfClass:[RKDynamicMapping class]]) {
@@ -107,7 +107,7 @@ NSSet *RKSetByRemovingSubkeypathsFromSet(NSSet *setOfKeyPaths);
 NSSet *RKSetByRemovingSubkeypathsFromSet(NSSet *setOfKeyPaths)
 {
     return [setOfKeyPaths objectsPassingTest:^BOOL(NSString *keyPath, BOOL *stop) {
-        if ([keyPath isEqual:[NSNull null]]) return YES; // Special case the root key path
+        if ([keyPath isEqualToString:@"."]) return YES; // Special case the root key path
         NSArray *keyPathComponents = [keyPath componentsSeparatedByString:@"."];
         NSMutableSet *parentKeyPaths = [NSMutableSet set];
         for (NSUInteger index = 0; index < [keyPathComponents count] - 1; index++) {
@@ -120,10 +120,10 @@ NSSet *RKSetByRemovingSubkeypathsFromSet(NSSet *setOfKeyPaths)
     }];
 }
 
-// When we map the root object, it is returned under the key `[NSNull null]`
+// When we map the root object, it is returned under the key '.'
 static id RKMappedValueForKeyPathInDictionary(NSString *keyPath, NSDictionary *dictionary)
 {
-    return ([keyPath isEqual:[NSNull null]]) ? [dictionary objectForKey:[NSNull null]] : [dictionary valueForKeyPath:keyPath];
+    return ([keyPath isEqualToString:@"."]) ? [dictionary objectForKey:@"."] : [dictionary valueForKeyPath:keyPath];
 }
 
 static void RKSetMappedValueForKeyPathInDictionary(id value, NSString *keyPath, NSMutableDictionary *dictionary)
@@ -131,7 +131,7 @@ static void RKSetMappedValueForKeyPathInDictionary(id value, NSString *keyPath, 
     NSCParameterAssert(value);
     NSCParameterAssert(keyPath);
     NSCParameterAssert(dictionary);
-    [keyPath isEqual:[NSNull null]] ? [dictionary setObject:value forKey:keyPath] : [dictionary setValue:value forKeyPath:keyPath];
+    [keyPath isEqualToString:@"."] ? [dictionary setObject:value forKey:keyPath] : [dictionary setValue:value forKeyPath:keyPath];
 }
 
 // Precondition: Must be called from within the correct context
@@ -285,7 +285,7 @@ static NSURL *RKRelativeURLFromURLAndResponseDescriptors(NSURL *URL, NSArray *re
                 }
             }
         }];
-        return [[RKMappingResult alloc] initWithDictionary:@{ [NSNull null]: managedObjects }];
+        return [[RKMappingResult alloc] initWithDictionary:@{ @".": managedObjects }];
     }
 
     self.responseMapperOperation = [[RKManagedObjectResponseMapperOperation alloc] initWithResponse:self.HTTPRequestOperation.response
